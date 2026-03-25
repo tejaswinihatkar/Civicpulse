@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.vscode/
+
+# Firebase secrets
+civicpulse-firebase.json

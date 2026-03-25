@@ -1,0 +1,109 @@
+[INFO] Scanning for projects...
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml
+Progress (1): 243 BProgress (2): 243 B | 234 BProgress (3): 243 B | 234 B | 255 BProgress (4): 243 B | 234 B | 255 B | 249 B                                           Downloaded from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml (234 B at 524 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml (249 B at 558 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml (243 B at 544 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml (255 B at 570 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml
+Progress (1): 242 BProgress (2): 242 B | 398 BProgress (3): 242 B | 398 B | 375 BProgress (4): 242 B | 398 B | 375 B | 394 B                                           Downloaded from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml (375 B at 6.8 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml (398 B at 7.2 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml (394 B at 7.0 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml (242 B at 4.9 kB/s)
+Progress (1): 4.6 kBProgress (1): 9.7 kBProgress (1): 14 kB Progress (2): 14 kB | 3.1 kBProgress (2): 14 kB | 7.7 kBProgress (2): 14 kB | 12 kB Progress (2): 14 kB | 17 kBProgress (2): 14 kB | 20 kBProgress (2): 14 kB | 21 kB                           Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (14 kB at 433 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (21 kB at 356 kB/s)
+[INFO] 
+[INFO] -----------------------< com.civicpulse:backend >-----------------------
+[INFO] Building civicpulse-backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.4.3:run (default-cli) > test-compile @ backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ backend ---
+[INFO] skip non existing resourceDirectory C:\Users\tejas\OneDrive\Desktop\civicpulse\civicpulse-backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.4.3:run (default-cli) < test-compile @ backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.3:run (default-cli) @ backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-03-18T12:42:17.546+05:30  INFO 18980 --- [civicpulse-backend] [           main] c.c.b.CivicpulseBackendApplication       : Starting CivicpulseBackendApplication using Java 21.0.10 with PID 18980 (C:\Users\tejas\OneDrive\Desktop\civicpulse\civicpulse-backend\target\classes started by tejas in C:\Users\tejas\OneDrive\Desktop\civicpulse\civicpulse-backend)
+2026-03-18T12:42:17.550+05:30  INFO 18980 --- [civicpulse-backend] [           main] c.c.b.CivicpulseBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-03-18T12:42:18.216+05:30  INFO 18980 --- [civicpulse-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-18T12:42:18.280+05:30  INFO 18980 --- [civicpulse-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 4 JPA repository interfaces.
+2026-03-18T12:42:18.855+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-03-18T12:42:18.869+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-18T12:42:18.869+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2026-03-18T12:42:18.942+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-18T12:42:18.944+05:30  INFO 18980 --- [civicpulse-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1358 ms
+2026-03-18T12:42:19.113+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-18T12:42:19.164+05:30  INFO 18980 --- [civicpulse-backend] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2026-03-18T12:42:19.245+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-18T12:42:19.560+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-18T12:42:19.590+05:30  INFO 18980 --- [civicpulse-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-18T12:42:19.782+05:30  INFO 18980 --- [civicpulse-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./data/civicpulse user=SA
+2026-03-18T12:42:19.785+05:30  INFO 18980 --- [civicpulse-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-18T12:42:19.808+05:30  WARN 18980 --- [civicpulse-backend] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-18T12:42:19.835+05:30  INFO 18980 --- [civicpulse-backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-18T12:42:20.951+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-18T12:42:21.039+05:30  INFO 18980 --- [civicpulse-backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-18T12:42:21.306+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-18T12:42:22.477+05:30  WARN 18980 --- [civicpulse-backend] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a3ff87a5-90de-441f-8323-af7a679f2850
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-03-18T12:42:22.487+05:30  INFO 18980 --- [civicpulse-backend] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-03-18T12:42:22.981+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/civicpulse'
+2026-03-18T12:42:23.084+05:30  INFO 18980 --- [civicpulse-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-03-18T12:42:23.092+05:30  INFO 18980 --- [civicpulse-backend] [           main] c.c.b.CivicpulseBackendApplication       : Started CivicpulseBackendApplication in 5.896 seconds (process running for 6.247)
+2026-03-18T12:42:23.156+05:30  INFO 18980 --- [civicpulse-backend] [           main] c.civicpulse.backend.config.DataSeeder   : Seeding database with sample data...
+2026-03-18T12:42:23.904+05:30  INFO 18980 --- [civicpulse-backend] [           main] c.civicpulse.backend.config.DataSeeder   : Database seeded successfully with 8 users, 8 complaints, 3 wards
+2026-03-18T12:43:13.749+05:30  INFO 18980 --- [civicpulse-backend] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-18T12:43:13.767+05:30  INFO 18980 --- [civicpulse-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-03-18T12:43:13.776+05:30  INFO 18980 --- [civicpulse-backend] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-18T12:43:13.778+05:30  INFO 18980 --- [civicpulse-backend] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-18T12:43:13.816+05:30  INFO 18980 --- [civicpulse-backend] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:00 min
+[INFO] Finished at: 2026-03-18T12:43:14+05:30
+[INFO] ------------------------------------------------------------------------
+Terminate batch job (Y/N)? 
