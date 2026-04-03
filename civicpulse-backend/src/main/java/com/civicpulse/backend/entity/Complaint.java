@@ -62,6 +62,7 @@ public class Complaint {
     private int upvotes = 0;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Column(columnDefinition = "TEXT")
     @Builder.Default
     private List<String> images = new ArrayList<>();
 
@@ -70,10 +71,12 @@ public class Complaint {
 
     // Proof of work
     @ElementCollection(fetch = FetchType.EAGER)
+    @Column(columnDefinition = "TEXT")
     @Builder.Default
     private List<String> beforeImages = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Column(columnDefinition = "TEXT")
     @Builder.Default
     private List<String> afterImages = new ArrayList<>();
 

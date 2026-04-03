@@ -1,0 +1,15 @@
+﻿civicpulse-backend/data/civicpulse.mv.db
+civicpulse-backend/data/civicpulse.trace.db
+civicpulse-backend/src/main/java/com/civicpulse/backend/config/DataSeeder.java
+civicpulse-backend/src/main/java/com/civicpulse/backend/config/SecurityConfig.java
+civicpulse-backend/src/main/java/com/civicpulse/backend/controller/AuthController.java
+civicpulse-backend/src/main/java/com/civicpulse/backend/entity/Complaint.java
+civicpulse-backend/src/main/java/com/civicpulse/backend/service/AuthService.java
+civicpulse-backend/src/main/java/com/civicpulse/backend/service/ComplaintService.java
+civicpulse-backend/src/main/resources/application.properties
+src/app/App.tsx
+src/app/pages/auth/Login.tsx
+src/app/pages/auth/Register.tsx
+src/app/pages/worker/WorkerDashboard.tsx
+src/app/routes.tsx
+src/app/services/api.ts

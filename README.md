@@ -8,6 +8,13 @@ The main goal here is to make civic problem-solving simpler. Citizens can report
 
 On the flip side, local authorities can view all these incoming complaints in a dashboard, assign them to specific workers based on the area and task, and track the resolution progress. Workers have their own interface to see what tasks they've been assigned and update the status once they complete the work. This keeps everyone on the same page and holds the right people accountable.
 
+## Recent Updates
+
+- **AI Integration & Optimization:** Added a powerful Gemini-powered AI chatbot to assist users with their queries seamlessly.
+- **Enhanced Authentication Flow:** Improved user registration, secure login routing, and logout functionality to accurately direct Citizens, Authorities, and Workers to their respective dashboards.
+- **Worker Dashboard Improvements:** Upgraded the worker interface, providing easier map-based location tracking for complaints and simpler proof-of-work image uploads.
+- **Backend Robustness:** Optimized `SecurityConfig`, updated `DataSeeder` for quick local testing, and improved logic within `AuthService` and `ComplaintService`.
+
 ## Tech Stack
 
 I built this using a modern stack to make it reliable and fast:

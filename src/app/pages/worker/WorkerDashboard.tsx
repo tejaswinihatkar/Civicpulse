@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { MapPin, Clock, CheckCircle, Navigation, Camera, MessageCircle, Briefcase, X, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MapPin, Clock, CheckCircle, Navigation, Camera, MessageCircle, Briefcase, X, Loader2, Upload, ImageIcon } from 'lucide-react';
 import { getWorkerTasks, startWork, resolveComplaint, getStoredUser } from '../../services/api';
 import { Issue } from '../../types';
 import { formatDistanceToNow } from 'date-fns';
@@ -11,6 +11,17 @@ export function WorkerDashboard() {
   const [selectedTask, setSelectedTask] = useState<Issue | null>(null);
   const [showProofModal, setShowProofModal] = useState(false);
   const [workNotes, setWorkNotes] = useState('');
+  const [afterImagePreview, setAfterImagePreview] = useState<string | null>(null);
+
+  const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setAfterImagePreview(ev.target?.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
 
   const loadTasks = async () => {
     try {
@@ -45,16 +56,17 @@ export function WorkerDashboard() {
   };
 
   const handleResolve = async () => {
-    if (!selectedTask) return;
+    if (!selectedTask || !afterImagePreview) return;
     try {
       await resolveComplaint(selectedTask.id, {
         workNotes,
-        beforeImages: selectedTask.images, // Mocking images for now
-        afterImages: ['https://images.unsplash.com/photo-1509062522202-dfbf8f77873f?w=800']
+        beforeImages: selectedTask.images, // Pass existing images as before
+        afterImages: [afterImagePreview] // Real image representation
       });
       setShowProofModal(false);
       setSelectedTask(null);
       setWorkNotes('');
+      setAfterImagePreview(null);
       loadTasks();
     } catch (error) {
       alert('Failed to resolve task');
@@ -169,7 +181,10 @@ export function WorkerDashboard() {
                     </div>
 
                     <div className="flex gap-3">
-                      <button className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 hover:shadow-lg transition-all font-semibold">
+                      <button 
+                        onClick={() => window.open(`https://maps.google.com/?q=${task.location.lat},${task.location.lng}`, '_blank')}
+                        className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 hover:shadow-lg transition-all font-semibold"
+                      >
                         <Navigation className="w-4 h-4" />
                         <span className="text-sm">Navigate</span>
                       </button>
@@ -269,6 +284,7 @@ export function WorkerDashboard() {
                   onClick={() => {
                     setShowProofModal(false);
                     setSelectedTask(null);
+                    setAfterImagePreview(null);
                   }}
                   className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center transition-colors"
                 >
@@ -291,10 +307,32 @@ export function WorkerDashboard() {
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
                     After Photos
                   </label>
-                  <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-slate-400 transition-colors cursor-pointer bg-slate-50/50">
-                    <Camera className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                    <p className="text-sm text-slate-600">Click to upload after photo</p>
-                  </div>
+                  
+                  {afterImagePreview ? (
+                    <div className="relative group rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                      <img src={afterImagePreview} alt="Work Proof" className="w-full h-48 object-cover" />
+                      <button 
+                        onClick={() => setAfterImagePreview(null)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-blue-400 hover:bg-blue-50 transition-colors cursor-pointer text-slate-500 hover:text-blue-600 group">
+                        <Camera className="w-8 h-8 mb-2 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                        <span className="text-sm font-semibold">Open Camera</span>
+                        <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImageCapture} />
+                      </label>
+                      
+                      <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-purple-400 hover:bg-purple-50 transition-colors cursor-pointer text-slate-500 hover:text-purple-600 group">
+                        <ImageIcon className="w-8 h-8 mb-2 text-slate-400 group-hover:text-purple-500 transition-colors" />
+                        <span className="text-sm font-semibold">Upload Device</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageCapture} />
+                      </label>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -316,6 +354,7 @@ export function WorkerDashboard() {
                   onClick={() => {
                     setShowProofModal(false);
                     setSelectedTask(null);
+                    setAfterImagePreview(null);
                   }}
                   className="px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 font-semibold transition-colors"
                 >
@@ -323,7 +362,7 @@ export function WorkerDashboard() {
                 </button>
                 <button 
                   onClick={handleResolve}
-                  disabled={!workNotes.trim()}
+                  disabled={!workNotes.trim() || !afterImagePreview}
                   className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 hover:shadow-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Mark as Complete

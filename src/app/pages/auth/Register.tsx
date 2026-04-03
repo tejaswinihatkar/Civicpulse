@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
-import { User, Mail, Lock, Phone, HelpCircle, ArrowRight, UserPlus, AlertCircle } from 'lucide-react';
+import { useNavigate, Link, useSearchParams } from 'react-router';
+import { User, Mail, Lock, Phone, ArrowRight, UserPlus, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { register } from '../../services/api';
 
 export function Register() {
+  const [searchParams] = useSearchParams();
+  const initialRole = searchParams.get('role')?.toUpperCase() || 'CITIZEN';
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [role, setRole] = useState('CITIZEN');
+  const [role, setRole] = useState(initialRole);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -141,27 +144,6 @@ export function Register() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2 ml-1">
-                  I am a...
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <HelpCircle className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-                  </div>
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="block w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-900 appearance-none"
-                    required
-                  >
-                    <option value="CITIZEN">Citizen</option>
-                    <option value="AUTHORITY">Authority</option>
-                    <option value="WORKER">Field Worker</option>
-                    <option value="NGO">NGO Partner</option>
-                  </select>
-                </div>
-              </div>
 
               <div className="md:col-span-2 mt-4">
                 <button
@@ -185,7 +167,7 @@ export function Register() {
           <div className="p-8 bg-slate-50/50 border-t border-slate-100 flex justify-center">
             <p className="text-slate-600 font-medium">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 hover:text-blue-700 font-bold ml-1">
+              <Link to={`/login${initialRole ? `?role=${initialRole.toLowerCase()}` : ""}`} className="text-blue-600 hover:text-blue-700 font-bold ml-1">
                 Log In
               </Link>
             </p>

@@ -23,6 +23,7 @@ public class ComplaintService {
     private final RoutingService routingService;
     private final NotificationService notificationService;
     private final SlaService slaService;
+    private final AIService aiService;
 
     @Value("${app.sla.critical:4}")
     private int slaCriticalHours;
@@ -44,20 +45,27 @@ public class ComplaintService {
         User citizen = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Parse category
+        // Parse category from UI but actively utilize AI for priority & intelligent recategorization
         Complaint.IssueCategory category;
+        Complaint.IssuePriority priority;
+        
         try {
-            category = Complaint.IssueCategory.valueOf(request.getCategory().toUpperCase());
+            // Smart AI routing
+            java.util.Map<String, String> aiResult = aiService.routeComplaint(request.getTitle(), request.getDescription());
+            category = Complaint.IssueCategory.valueOf(aiResult.get("category").toUpperCase());
+            priority = Complaint.IssuePriority.valueOf(aiResult.get("severity").toUpperCase());
         } catch (Exception e) {
-            category = Complaint.IssueCategory.OTHER;
+            try {
+                category = Complaint.IssueCategory.valueOf(request.getCategory().toUpperCase());
+            } catch (Exception ex) {
+                category = Complaint.IssueCategory.OTHER;
+            }
+            priority = detectPriority(category, request.getDescription());
         }
 
         // Smart routing: auto-detect ward + department
         String ward = routingService.detectWard(request.getLatitude(), request.getLongitude());
         String department = routingService.routeToDepartment(category);
-
-        // AI priority detection (rule-based for now)
-        Complaint.IssuePriority priority = detectPriority(category, request.getDescription());
 
         // Calculate SLA deadline
         LocalDateTime slaDeadline = slaService.calculateDeadline(priority);

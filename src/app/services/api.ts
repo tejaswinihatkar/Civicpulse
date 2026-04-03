@@ -128,7 +128,15 @@ async function apiFetch(url: string, options: RequestInit = {}) {
   }
 
   if (response.status === 204) return null;
-  return response.json();
+  
+  const text = await response.text();
+  if (!text) return null;
+  
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return text;
+  }
 }
 
 // ──────────────── Auth ────────────────
@@ -157,7 +165,21 @@ export async function login(email: string, password: string) {
 
 export function logout() {
   removeToken();
-  window.location.href = '/login';
+  window.location.href = '/';
+}
+
+export async function forgotPassword(email: string) {
+  return apiFetch('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+  return apiFetch('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ token, newPassword }),
+  });
 }
 
 // ──────────────── Complaints ────────────────
@@ -266,4 +288,12 @@ export async function getWorkers(department?: string): Promise<any[]> {
 
 export async function getLeaderboard() {
   return apiFetch('/users/leaderboard');
+}
+
+// ──────────────── AI Chatbot ────────────────
+export async function sendChatMessage(message: string) {
+  return apiFetch('/ai/chat', {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  });
 }

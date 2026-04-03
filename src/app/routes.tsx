@@ -2,6 +2,8 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import { Landing } from './pages/Landing';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
+import { ForgotPassword } from './pages/auth/ForgotPassword';
+import { ResetPassword } from './pages/auth/ResetPassword';
 import { CitizenDashboard } from './pages/citizen/CitizenDashboard';
 import { ReportIssue } from './pages/citizen/ReportIssue';
 import { CitizenRewards } from './pages/citizen/CitizenRewards';
@@ -25,7 +27,9 @@ import { getStoredUser } from './services/api';
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode, role?: string }) {
   const user = getStoredUser();
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to={`/login${role ? `?role=${role.toLowerCase()}` : ''}`} replace />;
+  }
   if (role && user.role.toLowerCase() !== role.toLowerCase()) {
     return <Navigate to="/" replace />;
   }
@@ -49,6 +53,14 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPassword />
   },
   // Citizen Routes
   {

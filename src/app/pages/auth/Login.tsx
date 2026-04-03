@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { useNavigate, Link, useSearchParams } from 'react-router';
 import { Mail, Lock, ArrowRight, LogIn, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { login } from '../../services/api';
@@ -10,6 +10,10 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  const roleParam = searchParams.get('role');
+  const displayRole = roleParam ? roleParam.charAt(0).toUpperCase() + roleParam.slice(1).toLowerCase() : '';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +52,7 @@ export function Login() {
 
             <div className="text-center mb-10">
               <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-              <p className="text-slate-600">Enter your credentials to access your dashboard</p>
+              <p className="text-slate-600">Enter your credentials to access your {displayRole ? `${displayRole} dashboard` : 'dashboard'}</p>
             </div>
 
             {error && (
@@ -87,9 +91,9 @@ export function Login() {
                   <label className="text-sm font-semibold text-slate-700">
                     Password
                   </label>
-                  <button type="button" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                  <Link to="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
                     Forgot?
-                  </button>
+                  </Link>
                 </div>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -126,7 +130,7 @@ export function Login() {
           <div className="p-8 bg-slate-50/50 border-t border-slate-100 flex justify-center">
             <p className="text-slate-600 font-medium">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-600 hover:text-blue-700 font-bold ml-1">
+              <Link to={`/register${roleParam ? `?role=${roleParam.toLowerCase()}` : ""}`} className="text-blue-600 hover:text-blue-700 font-bold ml-1">
                 Create one
               </Link>
             </p>

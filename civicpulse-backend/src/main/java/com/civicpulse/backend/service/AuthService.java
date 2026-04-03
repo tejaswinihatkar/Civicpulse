@@ -7,7 +7,12 @@ import com.civicpulse.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.UUID;
+import java.time.LocalDateTime;
+import com.civicpulse.backend.entity.PasswordResetToken;
+import com.civicpulse.backend.repository.PasswordResetTokenRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +21,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
+    private final PasswordResetTokenRepository tokenRepository;
+    private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -83,5 +90,41 @@ public class AuthService {
 
     public List<User> getWorkersByDepartment(String department) {
         return userRepository.findByRoleAndDepartment(User.UserRole.WORKER, department);
+    }
+
+    @Transactional
+    public void forgotPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email not registered"));
+        
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiryDate = LocalDateTime.now().plusHours(24);
+        
+        PasswordResetToken resetToken = tokenRepository.findByUser(user)
+                .orElse(PasswordResetToken.builder().user(user).build());
+                
+        resetToken.setToken(token);
+        resetToken.setExpiryDate(expiryDate);
+        tokenRepository.save(resetToken);
+        
+        String resetLink = "http://localhost:5173/reset-password?token=" + token;
+        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        PasswordResetToken resetToken = tokenRepository.findByToken(request.getToken())
+                .orElseThrow(() -> new RuntimeException("Invalid or expired token"));
+        
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            tokenRepository.delete(resetToken);
+            throw new RuntimeException("Token expired");
+        }
+        
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        
+        tokenRepository.delete(resetToken);
     }
 }
