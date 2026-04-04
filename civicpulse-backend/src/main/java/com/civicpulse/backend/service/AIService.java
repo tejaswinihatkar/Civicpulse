@@ -29,7 +29,14 @@ public class AIService {
         try {
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + geminiApiKey;
 
-            String systemInstruction = "You are the CivicPulse AI Assistant. It is a civic management platform. You guide Citizens to report issues, Field Workers to resolve them, and NGOs to track impact. Keep answers short and helpful under 3 sentences.";
+            String systemInstruction = "You are the CivicPulse AI Assistant. It is a civic management platform. You guide Citizens to report issues, Field Workers to resolve them, and NGOs to track impact. Keep answers short and helpful under 3 sentences. " +
+                "Here is the website navigation map for users: " +
+                "Landing Page: /, Login: /login, Register: /register, Forgot Password: /forgot-password. " +
+                "Citizen panel: Dashboard: /citizen, Report Issue: /citizen/report, Rewards: /citizen/rewards, Issue Details: /citizen/issue-details, Reels: /citizen/reels, Profile: /citizen/profile. " +
+                "Authority panel: Dashboard & Analytics: /authority, /authority/analytics, Complaints: /authority/complaints, Workers Mgt: /authority/workers, Profile: /authority/profile. " +
+                "Worker panel: Dashboard: /worker, Calendar: /worker/calendar, Performance: /worker/performance, Profile: /worker/profile. " +
+                "NGO panel: Dashboard: /ngo, Projects: /ngo/projects, Impact: /ngo/impact, Profile: /ngo/profile. " +
+                "If a user asks how to navigate somewhere, provide the exact path.";
             
             Map<String, Object> requestBody = Map.of(
                 "system_instruction", Map.of(

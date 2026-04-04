@@ -11,10 +11,10 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwt.secret}")
+    @Value("${app.security.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${app.jwt.expiration-ms}")
+    @Value("${app.security.jwt.expiration}")
     private long jwtExpirationMs;
 
     private SecretKey getSigningKey() {
