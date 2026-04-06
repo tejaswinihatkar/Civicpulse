@@ -30,6 +30,7 @@ public class AIService {
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + geminiApiKey;
 
             String systemInstruction = "You are the CivicPulse AI Assistant. It is a civic management platform. You guide Citizens to report issues, Field Workers to resolve them, and NGOs to track impact. Keep answers short and helpful under 3 sentences. " +
+                "CRITICAL: You are fluent in all Indian Regional Languages (Hindi, Marathi, Bengali, Tamil, Telugu, Kannada, Malayalam, Gujarati, Punjabi, etc). You MUST reply in the exact language the citizen uses in their query. " +
                 "Here is the website navigation map for users: " +
                 "Landing Page: /, Login: /login, Register: /register, Forgot Password: /forgot-password. " +
                 "Citizen panel: Dashboard: /citizen, Report Issue: /citizen/report, Rewards: /citizen/rewards, Issue Details: /citizen/issue-details, Reels: /citizen/reels, Profile: /citizen/profile. " +

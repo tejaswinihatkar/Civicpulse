@@ -6,6 +6,7 @@ import { ForgotPassword } from './pages/auth/ForgotPassword';
 import { ResetPassword } from './pages/auth/ResetPassword';
 import { CitizenDashboard } from './pages/citizen/CitizenDashboard';
 import { ReportIssue } from './pages/citizen/ReportIssue';
+import { MyIssues } from './pages/citizen/MyIssues';
 import { CitizenRewards } from './pages/citizen/CitizenRewards';
 import { IssueDetails } from './pages/citizen/IssueDetails';
 import { CitizenReels } from './pages/citizen/CitizenReels';
@@ -73,7 +74,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/citizen/my-issues',
-    element: <ProtectedRoute role="citizen"><CitizenDashboard /></ProtectedRoute>
+    element: <ProtectedRoute role="citizen"><MyIssues /></ProtectedRoute>
   },
   {
     path: '/citizen/rewards',

@@ -1,15 +1,58 @@
-
   <!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Implement Professionally</title>
+      <title>CivicPulse</title>
+      <style>
+        .goog-te-gadget-simple {
+          background-color: white !important;
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 8px !important;
+          padding: 6px 12px !important;
+          font-family: inherit !important;
+          font-size: 14px !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important;
+          cursor: pointer;
+        }
+        .goog-te-gadget-icon { display: none !important; }
+        .goog-te-menu-value { color: #4f46e5 !important; font-weight: 600;}
+        body { top: 0px !important; } 
+        .goog-te-banner-frame.skiptranslate { display: none !important; }
+        #google_translate_container {
+          position: fixed;
+          bottom: 24px;
+          left: 24px;
+          z-index: 9999;
+          transition: transform 0.3s ease;
+        }
+        #google_translate_container:hover {
+          transform: translateY(-2px);
+        }
+      </style>
     </head>
 
     <body>
+      <div id="google_translate_container">
+        <div id="google_translate_element"></div>
+      </div>
+      
       <div id="root"></div>
+
+      <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            // All official Scheduled Indian Languages supported by Google Translate
+            includedLanguages: 'hi,mr,bn,te,ta,ur,gu,kn,ml,or,pa,as,sa,sd,doi,mai,mni,ne',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+      </script>
+      <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
       <script type="module" src="/src/main.tsx"></script>
     </body>
   </html>
-  
