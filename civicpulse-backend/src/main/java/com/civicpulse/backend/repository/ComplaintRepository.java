@@ -60,4 +60,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, String> {
     List<Complaint> findResolvedByWorkerSince(@Param("workerId") String workerId, @Param("since") LocalDateTime since);
 
     long countByStatusAndResolvedAtAfter(Complaint.IssueStatus status, LocalDateTime since);
+
+    @Query("SELECT c.ward, c.category, COUNT(c) FROM Complaint c GROUP BY c.ward, c.category HAVING COUNT(c) > 1")
+    List<Object[]> findRecurringHotspots();
 }

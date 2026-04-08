@@ -23,12 +23,23 @@ public class AnalyticsService {
         long resolved = complaintRepository.countByStatus(Complaint.IssueStatus.RESOLVED);
         long inProgress = complaintRepository.countByStatus(Complaint.IssueStatus.IN_PROGRESS);
         long submitted = complaintRepository.countByStatus(Complaint.IssueStatus.SUBMITTED);
-        long acknowledged = complaintRepository.countByStatus(Complaint.IssueStatus.ACKNOWLEDGED);
+        long confirmed = complaintRepository.countByStatus(Complaint.IssueStatus.ACKNOWLEDGED);
         long critical = complaintRepository.countByPriority(Complaint.IssuePriority.CRITICAL);
         long slaBreaches = complaintRepository.findSlaBreached(LocalDateTime.now()).size();
         long resolvedToday = complaintRepository.countByStatusAndResolvedAtAfter(
                 Complaint.IssueStatus.RESOLVED, LocalDateTime.now().withHour(0).withMinute(0));
         double resolutionRate = total > 0 ? (resolved * 100.0 / total) : 0;
+
+        // Predictive: Identify recurring issue hotspots (Wards with > 3 issues of same category)
+        List<Map<String, Object>> recurringIssues = new ArrayList<>();
+        List<Object[]> hotspots = complaintRepository.findRecurringHotspots();
+        for (Object[] row : hotspots) {
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("ward", row[0]);
+            entry.put("category", row[1]);
+            entry.put("frequency", row[2]);
+            recurringIssues.add(entry);
+        }
 
         // By category
         Map<String, Long> byCategory = new LinkedHashMap<>();
@@ -73,7 +84,7 @@ public class AnalyticsService {
                 .totalComplaints(total)
                 .resolved(resolved)
                 .inProgress(inProgress)
-                .pending(submitted + acknowledged)
+                .pending(submitted + confirmed)
                 .critical(critical)
                 .slaBreaches(slaBreaches)
                 .resolvedToday(resolvedToday)
@@ -82,6 +93,7 @@ public class AnalyticsService {
                 .byStatus(byStatus)
                 .weeklyTrend(weeklyTrend)
                 .topWorkers(topWorkers)
+                .recurringIssues(recurringIssues)
                 .build();
     }
 

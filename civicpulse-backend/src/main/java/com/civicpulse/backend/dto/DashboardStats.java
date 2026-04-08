@@ -22,4 +22,5 @@ public class DashboardStats {
     private Map<String, Long> byStatus;
     private List<Map<String, Object>> weeklyTrend;
     private List<Map<String, Object>> topWorkers;
+    private List<Map<String, Object>> recurringIssues;
 }

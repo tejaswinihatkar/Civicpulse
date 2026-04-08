@@ -41,11 +41,23 @@ public class ComplaintService {
      * Submit a new complaint — core citizen flow
      */
     @Transactional
-    public ComplaintResponse submitComplaint(ComplaintRequest request, String userId) {
+public ComplaintResponse submitComplaint(ComplaintRequest request, String userId) {
         User citizen = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Parse category from UI but actively utilize AI for priority & intelligent recategorization
+        // Smart Duplicate Detection (Find similar issues in same ward reported within 48 hours)
+        List<Complaint> nearBy = complaintRepository.findByWard(routingService.detectWard(request.getLatitude(), request.getLongitude()));
+        boolean isDuplicate = nearBy.stream()
+                .filter(c -> c.getStatus() != Complaint.IssueStatus.RESOLVED)
+                .filter(c -> c.getReportedAt().isAfter(LocalDateTime.now().minusHours(48)))
+                .anyMatch(c -> c.getTitle().toLowerCase().contains(request.getTitle().toLowerCase()) || 
+                               request.getTitle().toLowerCase().contains(c.getTitle().toLowerCase()));
+
+        if (isDuplicate) {
+            throw new RuntimeException("Duplicate Alert: A similar issue has already been reported in this ward. Our teams are already on it!");
+        }
+
+        // Parse category from UI...
         Complaint.IssueCategory category;
         Complaint.IssuePriority priority;
         
