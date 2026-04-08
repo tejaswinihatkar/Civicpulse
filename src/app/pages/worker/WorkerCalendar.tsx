@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
+import { getWorkerTasks } from '../../services/api';
 
 interface Task {
   id: string;
@@ -13,56 +14,35 @@ interface Task {
 }
 
 export function WorkerCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 2, 13)); // March 13, 2026
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2026, 2, 13));
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const tasks: Task[] = [
-    {
-      id: '1',
-      title: 'Fix Street Light',
-      date: '2026-03-13',
-      time: '09:00 AM',
-      location: 'MG Road, Sector 14',
-      priority: 'High',
-      status: 'scheduled'
-    },
-    {
-      id: '2',
-      title: 'Repair Pothole',
-      date: '2026-03-13',
-      time: '02:00 PM',
-      location: 'Highway 24',
-      priority: 'Critical',
-      status: 'scheduled'
-    },
-    {
-      id: '3',
-      title: 'Clean Drainage',
-      date: '2026-03-14',
-      time: '10:00 AM',
-      location: 'Park Street',
-      priority: 'Medium',
-      status: 'scheduled'
-    },
-    {
-      id: '4',
-      title: 'Tree Trimming',
-      date: '2026-03-15',
-      time: '11:00 AM',
-      location: 'Central Park',
-      priority: 'Low',
-      status: 'scheduled'
-    },
-    {
-      id: '5',
-      title: 'Water Pipe Repair',
-      date: '2026-03-16',
-      time: '09:30 AM',
-      location: 'Main Street',
-      priority: 'High',
-      status: 'scheduled'
+  useEffect(() => {
+    async function loadTasks() {
+      try {
+        setLoading(true);
+        const fetched = await getWorkerTasks();
+        // Map backend complaint response to calendar task format
+        const mappedTasks: Task[] = fetched.map(t => ({
+          id: t.id,
+          title: t.title,
+          date: t.reportedAt instanceof Date ? t.reportedAt.toISOString().split('T')[0] : String(t.reportedAt).split('T')[0],
+          time: t.reportedAt instanceof Date ? t.reportedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : new Date(String(t.reportedAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          location: t.location?.address || 'City Location',
+          priority: (t.priority.charAt(0).toUpperCase() + t.priority.slice(1)) as any,
+          status: t.status === 'resolved' ? 'completed' : t.status === 'in-progress' ? 'in-progress' : 'scheduled'
+        }));
+        setTasks(mappedTasks);
+      } catch (error) {
+        console.error('Failed to load calendar tasks', error);
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
+    loadTasks();
+  }, []);
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();

@@ -58,4 +58,6 @@ public interface ComplaintRepository extends JpaRepository<Complaint, String> {
     @Query("SELECT c FROM Complaint c WHERE c.assignedTo.id = :workerId AND c.status = 'RESOLVED' " +
            "AND c.resolvedAt >= :since")
     List<Complaint> findResolvedByWorkerSince(@Param("workerId") String workerId, @Param("since") LocalDateTime since);
+
+    long countByStatusAndResolvedAtAfter(Complaint.IssueStatus status, LocalDateTime since);
 }

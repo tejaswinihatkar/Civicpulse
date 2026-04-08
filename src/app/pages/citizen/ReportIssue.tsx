@@ -57,11 +57,21 @@ export function ReportIssue() {
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const urls = Array.from(files).map(file => URL.createObjectURL(file));
-      setFormData({ ...formData, images: [...formData.images, ...urls] });
+      const base64Promises = Array.from(files).map(file => convertToBase64(file));
+      const base64Images = await Promise.all(base64Promises);
+      setFormData({ ...formData, images: [...formData.images, ...base64Images] });
     }
   };
 

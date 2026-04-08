@@ -12,6 +12,7 @@ import { IssueDetails } from './pages/citizen/IssueDetails';
 import { CitizenReels } from './pages/citizen/CitizenReels';
 import { CitizenProfile } from './pages/citizen/CitizenProfile';
 import { AuthorityDashboard } from './pages/authority/AuthorityDashboard';
+import { AuthorityAnalytics } from './pages/authority/AuthorityAnalytics';
 import { ComplaintManagementNew } from './pages/authority/ComplaintManagementNew';
 import { WorkersManagement } from './pages/authority/WorkersManagement';
 import { AuthorityProfile } from './pages/authority/AuthorityProfile';
@@ -107,7 +108,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/authority/analytics',
-    element: <ProtectedRoute role="authority"><AuthorityDashboard /></ProtectedRoute>
+    element: <ProtectedRoute role="authority"><AuthorityAnalytics /></ProtectedRoute>
   },
   {
     path: '/authority/profile',

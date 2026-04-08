@@ -1,24 +1,36 @@
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { AlertCircle, TrendingUp, CheckCircle, Clock, Users, Shield, Loader2 } from 'lucide-react';
-import { getDashboardStats } from '../../services/api';
+import { Link } from 'react-router';
+import { 
+  AlertCircle, CheckCircle, Clock, Users, Shield, 
+  Loader2, ArrowRight, MapPin, ClipboardList, Filter,
+  Bell, CheckSquare, Search, Activity
+} from 'lucide-react';
+import { getDashboardStats, getComplaints } from '../../services/api';
+import { Issue } from '../../types';
+import { formatDistanceToNow } from 'date-fns';
 
 export function AuthorityDashboard() {
   const [stats, setStats] = useState<any>(null);
+  const [recentIssues, setRecentIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchStats() {
+    async function fetchData() {
       try {
-        const data = await getDashboardStats();
-        setStats(data);
+        setLoading(true);
+        const [statsData, issuesData] = await Promise.all([
+          getDashboardStats(),
+          getComplaints({ status: 'submitted' }) // Focus on new issues needing action
+        ]);
+        setStats(statsData);
+        setRecentIssues(issuesData.slice(0, 5));
       } catch (error) {
-        console.error('Failed to fetch dashboard stats', error);
+        console.error('Failed to fetch dashboard data', error);
       } finally {
         setLoading(false);
       }
     }
-    fetchStats();
+    fetchData();
   }, []);
 
   if (loading || !stats) {
@@ -29,211 +41,173 @@ export function AuthorityDashboard() {
     );
   }
 
-  // Map backend field names to chart-compatible structures
-  const totalComplaints = stats.totalComplaints || 0;
-  const resolvedCount = stats.resolved || 0;
-  const inProgressCount = stats.inProgress || 0;
-  const pendingCount = stats.pending || 0;
-  const criticalCount = stats.critical || 0;
-  const slaBreaches = stats.slaBreaches || 0;
-
-  const statusData = [
-    { name: 'Resolved', value: resolvedCount, color: '#10b981' },
-    { name: 'In Progress', value: inProgressCount, color: '#8b5cf6' },
-    { name: 'Pending', value: pendingCount, color: '#f59e0b' }
-  ];
-
-  const categoryData = Object.entries(stats.byCategory || {}).map(([category, count]) => ({
-    category: category.charAt(0).toUpperCase() + category.slice(1).toLowerCase(),
-    count
-  }));
-
-  const weeklyTrendData = (stats.weeklyTrend || []).map((item: any) => ({
-    day: item.date || item.day,
-    reported: item.count || item.reported || 0,
-    resolved: item.resolved || 0
-  }));
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/20 py-6 sm:py-8">
+    <div className="min-h-screen bg-slate-50/50 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
-              <Shield className="w-6 h-6 text-white" />
+        {/* Top Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/20">
+              <Shield className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Authority Dashboard</h1>
-              <p className="text-slate-600">Monitor and manage civic issues across the city — powered by live DB</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Admin Command Center</h1>
+              <p className="text-slate-600 font-medium">Daily Overview & Action Items</p>
             </div>
+          </div>
+          <div className="flex items-center gap-3">
+             <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors relative">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+             </button>
+             <Link to="/authority/complaints" className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-xl font-bold hover:bg-slate-800 transition-all">
+                <CheckSquare className="w-5 h-5" />
+                <span>Quick Actions</span>
+             </Link>
           </div>
         </div>
 
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 mb-8">
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-blue-600" />
-              </div>
+        {/* Actionable Metrics */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+              <ClipboardList className="w-12 h-12 text-blue-600" />
             </div>
-            <div className="text-3xl font-bold text-slate-900 mb-1">{totalComplaints}</div>
-            <div className="text-sm font-medium text-slate-600">Total Issues</div>
+            <div className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Unassigned Issues</div>
+            <div className="text-4xl font-black text-slate-900 mb-2">{stats.pending || 0}</div>
+            <Link to="/authority/complaints?status=submitted" className="text-sm font-bold text-blue-600 flex items-center gap-1 hover:gap-2 transition-all">
+              Assign Now <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
-              </div>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+              <AlertCircle className="w-12 h-12 text-red-600" />
             </div>
-            <div className="text-3xl font-bold text-slate-900 mb-1">{resolvedCount}</div>
-            <div className="text-sm font-medium text-slate-600">Resolved</div>
-            <div className="text-xs font-semibold text-green-600 mt-1.5">
-              {totalComplaints > 0 ? Math.round((resolvedCount / totalComplaints) * 100) : 0}% resolution rate
-            </div>
+            <div className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Critical Alerts</div>
+            <div className="text-4xl font-black text-red-600 mb-2">{stats.critical || 0}</div>
+            <p className="text-xs font-semibold text-slate-500">Require immediate intervention</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-purple-600" />
-              </div>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+              <Clock className="w-12 h-12 text-orange-600" />
             </div>
-            <div className="text-3xl font-bold text-slate-900 mb-1">{inProgressCount}</div>
-            <div className="text-sm font-medium text-slate-600">In Progress</div>
+            <div className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">SLA Breaches</div>
+            <div className="text-4xl font-black text-orange-600 mb-2">{stats.slaBreaches || 0}</div>
+            <p className="text-xs font-semibold text-slate-500 text-orange-600/80">Pending resolution</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-red-600" />
-              </div>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+              <CheckCircle className="w-12 h-12 text-green-600" />
             </div>
-            <div className="text-3xl font-bold text-slate-900 mb-1">{criticalCount}</div>
-            <div className="text-sm font-medium text-slate-600">Critical Priority</div>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
-            <div className="text-3xl font-bold text-slate-900 mb-1">{slaBreaches}</div>
-            <div className="text-sm font-medium text-slate-600">SLA Violations</div>
+            <div className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Today's Solved</div>
+            <div className="text-4xl font-black text-green-600 mb-2">{stats.resolvedToday || 0}</div>
+            <p className="text-xs font-semibold text-slate-500">Keep up the momentum!</p>
           </div>
         </div>
 
-        {/* Charts Row */}
-        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6">Weekly Trend</h2>
-            {weeklyTrendData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={weeklyTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="day" stroke="#64748b" style={{ fontSize: '12px' }} />
-                  <YAxis stroke="#64748b" style={{ fontSize: '12px' }} />
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-                  <Line key="line-reported" type="monotone" dataKey="reported" stroke="#3b82f6" strokeWidth={3} name="Reported" dot={{ r: 4 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-[300px] text-slate-400 font-medium">
-                No trend data available yet. Reports will appear once complaints are filed.
-              </div>
-            )}
-          </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6">Issues by Category</h2>
-            {categoryData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={categoryData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="category" stroke="#64748b" style={{ fontSize: '12px' }} />
-                  <YAxis stroke="#64748b" style={{ fontSize: '12px' }} />
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-                  <Bar key="bar-count" dataKey="count" fill="#3b82f6" name="Total Issues" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-[300px] text-slate-400 font-medium">
-                No category data available yet.
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Status Distribution & Top Workers */}
-        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
-          <div className="bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6">Status Distribution</h2>
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {statusData.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 p-5 sm:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-slate-900">Top Performing Workers</h2>
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                <Users className="w-5 h-5 text-blue-600" />
-              </div>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Recent Unassigned Issues */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+                Latest Submissions
+              </h2>
+              <Link to="/authority/complaints" className="text-sm font-bold text-blue-600 hover:underline">
+                View All
+              </Link>
             </div>
 
-            <div className="space-y-3">
-              {(stats.topWorkers || []).map((worker: any, index: number) => (
-                <div key={worker.id || index} className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-50 to-white rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <img
-                        src={worker.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(worker.name)}&background=random`}
-                        alt={worker.name}
-                        className="w-12 h-12 rounded-xl object-cover ring-2 ring-white shadow-sm"
-                      />
-                      {index === 0 && (
-                        <div className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg">
-                          1
-                        </div>
+            <div className="space-y-4">
+              {recentIssues.map((issue) => (
+                <div key={issue.id} className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-blue-300 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0">
+                      {issue.images && issue.images[0] ? (
+                        <img src={issue.images[0]} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-2xl">📋</div>
                       )}
                     </div>
                     <div>
-                      <div className="font-semibold text-slate-900">{worker.name}</div>
-                      <div className="text-sm text-slate-600">{worker.department}</div>
+                      <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{issue.title}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-xs font-bold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md uppercase">{issue.category}</span>
+                        <span className="flex items-center gap-1 text-xs text-slate-500">
+                          <MapPin className="w-3 h-3" />
+                          {issue.location.address.split(',')[0]}
+                        </span>
+                        <span className="text-xs text-slate-400 font-medium">
+                          {formatDistanceToNow(new Date(issue.reportedAt), { addSuffix: true })}
+                        </span>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-slate-900">{worker.completedTasks || 0}</div>
-                    <div className="text-sm text-slate-600">Tasks completed</div>
-                    <div className="text-xs font-semibold text-green-600 mt-1">
-                      {worker.slaCompliance || 0}% SLA compliance
-                    </div>
-                  </div>
+                  <Link 
+                    to={`/authority/complaints?id=${issue.id}`}
+                    className="px-4 py-2.5 bg-blue-50 text-blue-700 text-sm font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all whitespace-nowrap text-center"
+                  >
+                    Assign Task
+                  </Link>
                 </div>
               ))}
-              {(!stats.topWorkers || stats.topWorkers.length === 0) && (
-                <div className="text-center py-6 text-slate-500">No worker data available. Workers need to be registered first.</div>
+              {recentIssues.length === 0 && (
+                <div className="py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200 text-center">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-8 h-8 text-slate-300" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900">Zero Pending Submissions</h3>
+                  <p className="text-slate-500">All citizens' voices have been heard and assigned.</p>
+                </div>
               )}
+            </div>
+          </div>
+
+          {/* Quick Stats sidebar */}
+          <div className="space-y-8">
+            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
+              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+              <Activity className="w-10 h-10 text-indigo-400 mb-6" />
+              <h3 className="text-xl font-bold mb-2">City Health Score</h3>
+              <div className="text-5xl font-black mb-6">A+</div>
+              <div className="space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-400">Response Speed</span>
+                  <span className="font-bold">Fast</span>
+                </div>
+                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-indigo-400 w-4/5 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl border border-slate-200 p-6">
+              <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <Users className="w-5 h-5 text-indigo-600" />
+                Resources Active
+              </h3>
+              <div className="space-y-5">
+                {(stats.topWorkers || []).slice(0, 3).map((worker: any) => (
+                  <div key={worker.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(worker.name)}&background=random`} className="w-10 h-10 rounded-xl" />
+                      <div>
+                        <div className="text-sm font-bold text-slate-900">{worker.name}</div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase">{worker.department}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                       <div className="text-xs font-bold text-green-600">{worker.slaCompliance}% SLA</div>
+                    </div>
+                  </div>
+                ))}
+                <Link to="/authority/workers" className="block text-center text-sm font-bold text-blue-600 mt-4 hover:underline">
+                  Manage Field Workforce
+                </Link>
+              </div>
             </div>
           </div>
         </div>

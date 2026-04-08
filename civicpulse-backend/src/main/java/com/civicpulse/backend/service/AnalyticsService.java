@@ -26,6 +26,8 @@ public class AnalyticsService {
         long acknowledged = complaintRepository.countByStatus(Complaint.IssueStatus.ACKNOWLEDGED);
         long critical = complaintRepository.countByPriority(Complaint.IssuePriority.CRITICAL);
         long slaBreaches = complaintRepository.findSlaBreached(LocalDateTime.now()).size();
+        long resolvedToday = complaintRepository.countByStatusAndResolvedAtAfter(
+                Complaint.IssueStatus.RESOLVED, LocalDateTime.now().withHour(0).withMinute(0));
         double resolutionRate = total > 0 ? (resolved * 100.0 / total) : 0;
 
         // By category
@@ -74,6 +76,7 @@ public class AnalyticsService {
                 .pending(submitted + acknowledged)
                 .critical(critical)
                 .slaBreaches(slaBreaches)
+                .resolvedToday(resolvedToday)
                 .resolutionRate(Math.round(resolutionRate * 10.0) / 10.0)
                 .byCategory(byCategory)
                 .byStatus(byStatus)

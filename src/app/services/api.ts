@@ -118,13 +118,24 @@ async function apiFetch(url: string, options: RequestInit = {}) {
   try {
     response = await fetch(`${API_BASE}${url}`, { ...options, headers });
   } catch (networkError) {
-    // Network error = server is down or unreachable
-    throw new Error('Server is unreachable. Please make sure the backend is running on port 8080.');
+    console.error('Network Error:', networkError);
+    throw new Error('Server is unreachable. Please ensure the backend (Spring Boot) is running on port 8080.');
   }
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(err.message || err.error || `HTTP ${response.status}`);
+    let errorMessage = 'Request failed';
+    try {
+      const err = await response.json();
+      errorMessage = err.message || err.error || `Error ${response.status}`;
+    } catch (e) {
+      // Not a JSON error (e.g. 500 error or 404)
+      errorMessage = `Server Error ${response.status}: The request could not be processed.`;
+      if (response.status === 403 || response.status === 401) {
+        errorMessage = 'Unauthorized: Your session may have expired. Please login again.';
+      }
+    }
+    console.error(`API Error [${response.status}] at ${url}:`, errorMessage);
+    throw new Error(errorMessage);
   }
 
   if (response.status === 204) return null;

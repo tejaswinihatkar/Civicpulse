@@ -16,6 +16,7 @@ public class DashboardStats {
     private long pending;
     private long critical;
     private long slaBreaches;
+    private long resolvedToday;
     private double resolutionRate;
     private Map<String, Long> byCategory;
     private Map<String, Long> byStatus;

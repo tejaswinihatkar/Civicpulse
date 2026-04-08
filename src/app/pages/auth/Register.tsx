@@ -144,6 +144,28 @@ export function Register() {
                 </div>
               </div>
 
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-slate-700 mb-3 ml-1">
+                  I am a...
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {['CITIZEN', 'AUTHORITY', 'WORKER', 'NGO'].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setRole(r)}
+                      className={`py-3 px-2 rounded-xl text-xs font-bold transition-all border ${
+                        role === r 
+                          ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200' 
+                          : 'bg-white border-slate-200 text-slate-600 hover:border-blue-400'
+                      }`}
+                    >
+                      {r.charAt(0) + r.slice(1).toLowerCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
 
               <div className="md:col-span-2 mt-4">
                 <button
