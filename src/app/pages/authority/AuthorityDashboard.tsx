@@ -42,17 +42,19 @@ export function AuthorityDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-6 sm:py-8">
+    <div className="min-h-screen bg-[#fafbfc] py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/20">
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/30 animate-float">
               <Shield className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Admin Command Center</h1>
-              <p className="text-slate-600 font-medium">Daily Overview & Action Items</p>
+              <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                Admin <span className="text-gradient">Command Center</span>
+              </h1>
+              <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em]">Operational Overview • Real-time Data</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -69,7 +71,7 @@ export function AuthorityDashboard() {
 
         {/* Actionable Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+          <div className="glass-card p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <ClipboardList className="w-12 h-12 text-blue-600" />
             </div>
@@ -80,7 +82,7 @@ export function AuthorityDashboard() {
             </Link>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+          <div className="glass-card p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <AlertCircle className="w-12 h-12 text-red-600" />
             </div>
@@ -89,7 +91,7 @@ export function AuthorityDashboard() {
             <p className="text-xs font-semibold text-slate-500">Require immediate intervention</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+          <div className="glass-card p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <Clock className="w-12 h-12 text-orange-600" />
             </div>
@@ -98,7 +100,7 @@ export function AuthorityDashboard() {
             <p className="text-xs font-semibold text-slate-500 text-orange-600/80">Pending resolution</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+          <div className="glass-card p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <CheckCircle className="w-12 h-12 text-green-600" />
             </div>
