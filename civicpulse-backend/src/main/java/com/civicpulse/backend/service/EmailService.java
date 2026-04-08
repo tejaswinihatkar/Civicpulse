@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,18 +14,25 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendPasswordResetEmail(String to, String resetLink) {
+    @Async
+    public void sendSimpleEmail(String to, String subject, String body) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("no-reply@civicpulse.com");
             message.setTo(to);
-            message.setSubject("Password Reset Request - CivicPulse");
-            message.setText("To reset your password, click the link below:\n" + resetLink +
-                    "\n\nIf you did not request a password reset, please ignore this email.");
-            
+            message.setSubject(subject);
+            message.setText(body);
             mailSender.send(message);
-            log.info("Password reset email sent to {}", to);
+            log.info("Email sent to {}: {}", to, subject);
         } catch (Exception e) {
-            log.error("Failed to send email to {}. If mail configuration is not set up, use this link to reset password: {}", to, resetLink);
+            log.error("Failed to send email to {}: {}", to, e.getMessage());
         }
+    }
+
+    @Async
+    public void sendPasswordResetEmail(String to, String token) {
+        String subject = "CivicPulse - Password Reset Request";
+        String body = "You requested a password reset. Use this token: " + token + "\n\nIf you didn't request this, please ignore this email.";
+        sendSimpleEmail(to, subject, body);
     }
 }

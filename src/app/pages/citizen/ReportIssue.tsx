@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Camera, MapPin, Mic, Upload, CheckCircle, Loader2, ArrowLeft, Send } from 'lucide-react';
+import { Camera, MapPin, Mic, Upload, CheckCircle, Loader2, ArrowLeft, Send, Shield } from 'lucide-react';
 import { motion } from 'motion/react';
 import { submitComplaint } from '../../services/api';
 
@@ -12,7 +12,8 @@ export function ReportIssue() {
     description: '',
     category: '',
     location: '',
-    images: [] as string[]
+    images: [] as string[],
+    anonymous: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -43,7 +44,7 @@ export function ReportIssue() {
         longitude: 77.2090,
         address: formData.location || 'Main Street, Connaught Place, New Delhi',
         images: formData.images,
-        anonymous: false
+        anonymous: formData.anonymous
       });
       
       setSubmitted(true);
@@ -222,6 +223,25 @@ export function ReportIssue() {
                         <input type="file" multiple className="hidden" onChange={handleFileUpload} accept="image/*" />
                       </label>
                     </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-slate-600" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-slate-900">Report Anonymously</div>
+                        <div className="text-xs text-slate-500 font-medium">Hide your name from the public dashboard</div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, anonymous: !formData.anonymous })}
+                      className={`w-14 h-8 rounded-full transition-all relative ${formData.anonymous ? 'bg-blue-600' : 'bg-slate-300'}`}
+                    >
+                      <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${formData.anonymous ? 'left-7 shadow-lg' : 'left-1'}`} />
+                    </button>
                   </div>
                 </div>
 

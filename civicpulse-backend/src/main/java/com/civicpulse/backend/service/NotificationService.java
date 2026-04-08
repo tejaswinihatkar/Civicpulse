@@ -15,16 +15,27 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final EmailService emailService;
+    private final SmsService smsService;
 
     public void notifyComplaintSubmitted(Complaint complaint) {
         if (complaint.getReportedBy() != null) {
+            String title = "Complaint Submitted";
+            String message = "Your complaint \"" + complaint.getTitle() + "\" has been submitted successfully. ID: " + complaint.getId();
+            
             createNotification(
                 complaint.getReportedBy(),
-                "Complaint Submitted",
-                "Your complaint \"" + complaint.getTitle() + "\" has been submitted successfully. ID: " + complaint.getId(),
+                title,
+                message,
                 Notification.NotificationType.COMPLAINT_SUBMITTED,
                 complaint.getId()
             );
+
+            // Send Email & SMS
+            emailService.sendSimpleEmail(complaint.getReportedBy().getEmail(), title, message);
+            if (complaint.getReportedBy().getPhone() != null) {
+                smsService.sendSms(complaint.getReportedBy().getPhone(), message);
+            }
         }
     }
 
@@ -37,15 +48,24 @@ public class NotificationService {
             default -> "updated";
         };
 
+        String title = "Complaint " + newStatus.name().replace("_", " ");
+        String message = "Your complaint \"" + complaint.getTitle() + "\" has been " + statusText;
+
         // Notify citizen
         if (complaint.getReportedBy() != null) {
             createNotification(
                 complaint.getReportedBy(),
-                "Complaint " + newStatus.name().replace("_", " "),
-                "Your complaint \"" + complaint.getTitle() + "\" has been " + statusText,
+                title,
+                message,
                 mapStatusToType(newStatus),
                 complaint.getId()
             );
+
+            // Send Real-time alerts
+            emailService.sendSimpleEmail(complaint.getReportedBy().getEmail(), title, message);
+            if (complaint.getReportedBy().getPhone() != null) {
+                smsService.sendSms(complaint.getReportedBy().getPhone(), message);
+            }
         }
 
         // Notify assigned worker
