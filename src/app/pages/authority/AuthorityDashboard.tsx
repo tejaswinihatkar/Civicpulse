@@ -71,7 +71,7 @@ export function AuthorityDashboard() {
 
         {/* Actionable Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div className="glass-card p-6 relative overflow-hidden group">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <ClipboardList className="w-12 h-12 text-blue-600" />
             </div>
@@ -82,7 +82,7 @@ export function AuthorityDashboard() {
             </Link>
           </div>
 
-          <div className="glass-card p-6 relative overflow-hidden group">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <AlertCircle className="w-12 h-12 text-red-600" />
             </div>
@@ -91,7 +91,7 @@ export function AuthorityDashboard() {
             <p className="text-xs font-semibold text-slate-500">Require immediate intervention</p>
           </div>
 
-          <div className="glass-card p-6 relative overflow-hidden group">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <Clock className="w-12 h-12 text-orange-600" />
             </div>
@@ -100,7 +100,7 @@ export function AuthorityDashboard() {
             <p className="text-xs font-semibold text-slate-500 text-orange-600/80">Pending resolution</p>
           </div>
 
-          <div className="glass-card p-6 relative overflow-hidden group">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <CheckCircle className="w-12 h-12 text-green-600" />
             </div>

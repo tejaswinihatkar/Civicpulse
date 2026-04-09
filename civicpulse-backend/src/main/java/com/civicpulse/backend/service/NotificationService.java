@@ -15,6 +15,7 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final com.civicpulse.backend.repository.UserRepository userRepository;
     private final EmailService emailService;
     private final SmsService smsService;
 
@@ -65,6 +66,19 @@ public class NotificationService {
             emailService.sendSimpleEmail(complaint.getReportedBy().getEmail(), title, message);
             if (complaint.getReportedBy().getPhone() != null) {
                 smsService.sendSms(complaint.getReportedBy().getPhone(), message);
+            }
+        }
+
+        // Notify authorities if resolved
+        if (newStatus == Complaint.IssueStatus.RESOLVED) {
+            String adminTitle = "Issue Resolved: " + complaint.getTitle();
+            String adminMsg = "Complaint ID " + complaint.getId() + " has been marked as resolved by " + 
+                             (complaint.getAssignedTo() != null ? complaint.getAssignedTo().getName() : "a worker") + ".";
+            
+            List<User> authorities = userRepository.findByRole(User.UserRole.AUTHORITY);
+            for (User admin : authorities) {
+                createNotification(admin, adminTitle, adminMsg, Notification.NotificationType.COMPLAINT_RESOLVED, complaint.getId());
+                emailService.sendSimpleEmail(admin.getEmail(), adminTitle, adminMsg);
             }
         }
 

@@ -1,16 +1,33 @@
 import { Link, useLocation } from 'react-router';
 import { Menu, Bell, User, LogOut, X } from 'lucide-react';
-import { useState } from 'react';
-
-import { getStoredUser, logout } from '../services/api';
+import { useState, useEffect } from 'react';
+import { getStoredUser, logout, getUnreadCount } from '../services/api';
 
 export function Navbar() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const user = getStoredUser();
 
   const userRole = user?.role?.toLowerCase();
   const userName = user?.name;
+
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchUnread = async () => {
+      try {
+        const count = await getUnreadCount();
+        setUnreadCount(count);
+      } catch (e) {
+        console.error('Unread fetch fail', e);
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000); // Polling every 30s
+    return () => clearInterval(interval);
+  }, [user]);
 
   const getRoleLinks = () => {
     switch (userRole) {
@@ -88,10 +105,17 @@ export function Navbar() {
           <div className="flex items-center space-x-3">
             {userName && (
               <>
-                <button className="p-2.5 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors relative">
+                <Link 
+                  to="/notifications"
+                  className="p-2.5 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors relative"
+                >
                   <Bell className="w-5 h-5" />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                </button>
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full ring-2 ring-white">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </Link>
                 <div className="hidden sm:flex items-center space-x-2.5 px-3 py-1.5 bg-slate-50 rounded-xl">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white shadow-sm">
                     <User className="w-4 h-4" />

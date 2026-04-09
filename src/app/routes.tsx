@@ -24,6 +24,7 @@ import { NGODashboard } from './pages/ngo/NGODashboard';
 import { NGOProjects } from './pages/ngo/NGOProjects';
 import { NGOImpact } from './pages/ngo/NGOImpact';
 import { NGOProfile } from './pages/ngo/NGOProfile';
+import { Notifications } from './pages/shared/Notifications';
 import { Navbar } from './components/Navbar';
 import { getStoredUser } from './services/api';
 
@@ -147,5 +148,9 @@ export const router = createBrowserRouter([
   {
     path: '/ngo/profile',
     element: <ProtectedRoute role="ngo"><NGOProfile /></ProtectedRoute>
+  },
+  {
+    path: '/notifications',
+    element: <ProtectedRoute><Notifications /></ProtectedRoute>
   }
 ]);
