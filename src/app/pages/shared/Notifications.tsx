@@ -16,7 +16,13 @@ export function Notifications() {
   const fetchNotifications = async () => {
     try {
       const data = await getNotifications();
-      setNotifications(data);
+      console.log('Fetched Notifications:', data); // Debug log
+      if (Array.isArray(data)) {
+        setNotifications(data);
+      } else {
+        console.warn('Expected array for notifications but got:', data);
+        setNotifications([]);
+      }
     } catch (error) {
       console.error('Failed to fetch notifications', error);
     } finally {

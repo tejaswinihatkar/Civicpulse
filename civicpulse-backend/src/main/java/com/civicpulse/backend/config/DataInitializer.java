@@ -22,15 +22,18 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (complaintRepository.count() > 0) return;
 
-        // Create a dummy user
-        User system = User.builder()
-                .name("Civic System")
-                .email("system@civicpulse.gov")
-                .password(passwordEncoder.encode("system123"))
-                .phone("0000000000")
-                .role(User.UserRole.SUPER_ADMIN)
-                .build();
-        userRepository.save(system);
+        // Create a dummy user if not exists
+        User system = userRepository.findByEmail("system@civicpulse.gov").orElse(null);
+        if (system == null) {
+            system = User.builder()
+                    .name("Civic System")
+                    .email("system@civicpulse.gov")
+                    .password(passwordEncoder.encode("system123"))
+                    .phone("0000000000")
+                    .role(User.UserRole.SUPER_ADMIN)
+                    .build();
+            system = userRepository.save(system);
+        }
 
         // Trending Dummy Issues
         createIssue("Massive Pothole on M.G. Road", "Large pothole causing traffic jams near the main market.", 

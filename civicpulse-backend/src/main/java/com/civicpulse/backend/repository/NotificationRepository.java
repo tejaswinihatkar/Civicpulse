@@ -8,9 +8,12 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, String> {
 
-    List<Notification> findByUserIdOrderByCreatedAtDesc(String userId);
+    @org.springframework.data.jpa.repository.Query("SELECT n FROM Notification n WHERE n.user.id = :userId ORDER BY n.createdAt DESC")
+    List<Notification> findByUserIdOrderByCreatedAtDesc(@org.springframework.data.repository.query.Param("userId") String userId);
 
-    List<Notification> findByUserIdAndReadFalseOrderByCreatedAtDesc(String userId);
+    @org.springframework.data.jpa.repository.Query("SELECT n FROM Notification n WHERE n.user.id = :userId AND n.read = false ORDER BY n.createdAt DESC")
+    List<Notification> findByUserIdAndReadFalseOrderByCreatedAtDesc(@org.springframework.data.repository.query.Param("userId") String userId);
 
-    long countByUserIdAndReadFalse(String userId);
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(n) FROM Notification n WHERE n.user.id = :userId AND n.read = false")
+    long countByUserIdAndReadFalse(@org.springframework.data.repository.query.Param("userId") String userId);
 }
