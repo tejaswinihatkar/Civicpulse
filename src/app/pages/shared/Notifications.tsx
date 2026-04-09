@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Bell, CheckCircle, Info, AlertTriangle, Loader2, List, Trash2 } from 'lucide-react';
-import { getNotifications, markNotificationRead } from '../../services/api';
+import { getNotifications, markNotificationRead, markAllNotificationsRead } from '../../services/api';
 import { formatDistanceToNow } from 'date-fns';
 
 export function Notifications() {
@@ -9,11 +9,12 @@ export function Notifications() {
 
   useEffect(() => {
     fetchNotifications();
+    const interval = setInterval(fetchNotifications, 10000); // Poll every 10s
+    return () => clearInterval(interval);
   }, []);
 
   const fetchNotifications = async () => {
     try {
-      setLoading(true);
       const data = await getNotifications();
       setNotifications(data);
     } catch (error) {
@@ -29,6 +30,15 @@ export function Notifications() {
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     } catch (error) {
       console.error('Failed to mark read', error);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllNotificationsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } catch (error) {
+      console.error('Failed to mark all read', error);
     }
   };
 
@@ -51,7 +61,12 @@ export function Notifications() {
             </div>
             <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
           </div>
-          <button className="text-sm font-bold text-blue-600 hover:underline">Mark all as read</button>
+          <button 
+            onClick={handleMarkAllRead}
+            className="text-sm font-bold text-blue-600 hover:underline"
+          >
+            Mark all as read
+          </button>
         </div>
 
         {loading ? (

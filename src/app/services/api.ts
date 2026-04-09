@@ -281,6 +281,9 @@ export async function getUnreadCount(): Promise<number> {
 export async function markNotificationRead(id: string) {
   return apiFetch(`/notifications/${id}/read`, { method: 'PATCH' });
 }
+export async function markAllNotificationsRead() {
+  return apiFetch('/notifications/read-all', { method: 'PATCH' });
+}
 
 // ──────────────── Analytics ────────────────
 export async function getDashboardStats() {
