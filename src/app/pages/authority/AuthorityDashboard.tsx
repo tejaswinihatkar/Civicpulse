@@ -20,10 +20,10 @@ export function AuthorityDashboard() {
         setLoading(true);
         const [statsData, issuesData] = await Promise.all([
           getDashboardStats(),
-          getComplaints({ status: 'submitted' }) // Focus on new issues needing action
+          getComplaints() // Show both new and recently finished issues
         ]);
         setStats(statsData);
-        setRecentIssues(issuesData.slice(0, 5));
+        setRecentIssues(issuesData.slice(0, 10)); // Show more items
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
       } finally {
@@ -137,7 +137,12 @@ export function AuthorityDashboard() {
                     <div>
                       <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{issue.title}</h3>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="text-xs font-bold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md uppercase">{issue.category}</span>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md uppercase ${
+                          issue.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {issue.status.replace('-', ' ')}
+                        </span>
+                        <span className="text-xs font-bold px-2 py-0.5 bg-slate-50 text-slate-400 rounded-md uppercase">{issue.category}</span>
                         <span className="flex items-center gap-1 text-xs text-slate-500">
                           <MapPin className="w-3 h-3" />
                           {issue.location.address.split(',')[0]}

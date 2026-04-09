@@ -31,6 +31,7 @@ export function CitizenDashboard() {
     loadIssues();
   }, [filterStatus, filterCategory]);
 
+  const trendingIssues = [...issues].sort((a, b) => b.upvotes - a.upvotes).slice(0, 6);
   const nearbyIssues = issues.slice(0, 4);
 
   return (
@@ -167,8 +168,10 @@ export function CitizenDashboard() {
              </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {issues.map((issue) => (
-                <IssueCard key={issue.id} issue={issue} />
+              {trendingIssues.map((issue) => (
+                <Link key={issue.id} to={`/citizen/issue-details?id=${issue.id}`}>
+                  <IssueCard issue={issue} />
+                </Link>
               ))}
               {issues.length === 0 && (
                 <div className="col-span-full py-10 text-center text-slate-500 bg-white rounded-2xl border border-dashed border-slate-300">

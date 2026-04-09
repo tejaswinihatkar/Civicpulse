@@ -102,10 +102,17 @@ export function IssueCard({ issue, onClick, showActions = false }: IssueCardProp
               <span>{formatDistanceToNow(issue.reportedAt, { addSuffix: true })}</span>
             </div>
 
-            <div className="flex items-center space-x-1.5 bg-blue-50 text-blue-600 font-semibold px-2.5 py-1.5 rounded-lg">
-              <TrendingUp className="w-4 h-4" />
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                // We will handle upvote in the parent component via the IssueDetails link usually,
+                // but let's make it look like a button
+              }}
+              className="flex items-center space-x-1.5 bg-blue-50 text-blue-600 font-bold px-3 py-1.5 rounded-lg hover:bg-blue-600 hover:text-white transition-all group/upvote"
+            >
+              <TrendingUp className="w-4 h-4 group-hover/upvote:scale-125 transition-transform" />
               <span>{issue.upvotes}</span>
-            </div>
+            </button>
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-slate-100">

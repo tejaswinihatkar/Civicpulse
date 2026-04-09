@@ -69,13 +69,15 @@ public class NotificationService {
             }
         }
 
-        // Notify authorities if resolved
+        // Notify authorities and super-admins if resolved
         if (newStatus == Complaint.IssueStatus.RESOLVED) {
             String adminTitle = "Issue Resolved: " + complaint.getTitle();
             String adminMsg = "Complaint ID " + complaint.getId() + " has been marked as resolved by " + 
                              (complaint.getAssignedTo() != null ? complaint.getAssignedTo().getName() : "a worker") + ".";
             
             List<User> authorities = userRepository.findByRole(User.UserRole.AUTHORITY);
+            authorities.addAll(userRepository.findByRole(User.UserRole.SUPER_ADMIN));
+            
             for (User admin : authorities) {
                 createNotification(admin, adminTitle, adminMsg, Notification.NotificationType.COMPLAINT_RESOLVED, complaint.getId());
                 emailService.sendSimpleEmail(admin.getEmail(), adminTitle, adminMsg);
